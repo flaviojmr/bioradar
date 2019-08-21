@@ -9,6 +9,9 @@ from scipy import signal
 #   Este script crea un arreglo donde los valores son los valores medios del
 #   archivo de sonido, en donde la muestra depende del parámetro dist
 
+#Esta es una prueba para commit
+
+lalalalalalala
 
 def convert_hertz(freq):
     return freq * 2.0 / 44100.0
