@@ -1,6 +1,7 @@
 from scipy.io import wavfile
 import matplotlib.pyplot as plt
-from pylab import arange, plot, mean, subplot
+from pylab import plot, subplot, xlabel, ylabel
+from pylab import fft, ceil, log10, arange, mean
 
 # Este script crea un arreglo donde los valores son los valores medios del
 # archivo de sonido, en donde la muestra depende del parámetro 'dist'
