@@ -107,11 +107,11 @@ print('     > Orden del filtro pasabanda: ' + str(ord))
 
 print('> Segundo filtro aplicado, @25Hz')
 
-#hacerfft(canal1Filtrado)
-#grafica(timeArray, canal1Filtrado, "| Pasabanda @ 25Hz")
+hacerfft(canal1Filtrado)
+grafica(timeArray, canal1Filtrado, "| Pasabanda @ 25Hz")
 
 # Diodo
-canal1Filtrado[canal1Filtrado < 0] = 0
+#canal1Filtrado[canal1Filtrado < 0] = 0
 
 #grafica(timeArray, canal1Filtrado, "| Diodo (filtrado)")
 
@@ -130,7 +130,7 @@ plot(peaksFiltrado/fs, canal1Filtrado[peaksFiltrado])
 
 # Diodo
 canalNoFiltro = canal1
-canalNoFiltro[canalNoFiltro < 0] = 0
+#canalNoFiltro[canalNoFiltro < 0] = 0
 
 #grafica(timeArray, canalNoFiltro, "| Diodo (no filtrado)")
 
@@ -161,7 +161,7 @@ plt.show()
 '''
 print("Correlación de ubicación de puntos máximos" + str(np.corrcoef(peaksFiltrado, peaksNoFiltro)))
 
-print("Correlación de valores de puntos máximos" + str(np.corrcoef(valuesFiltrado, valuesNoFiltro)))*
+print("Correlación de valores de puntos máximos" + str(np.corrcoef(valuesFiltrado, valuesNoFiltro)))
 
 
 posPicosFiltrado = list(peaksFiltrado)
