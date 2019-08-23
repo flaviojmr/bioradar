@@ -77,9 +77,11 @@ grafica(timeArray, canal1, "original")
 
 # Primer filtro pasabajos, diseño y aplicación
 gpass = 3
-gstop = 18
+gstop = 15
 
-ord, wn = signal.buttord(convert_hertz(80), convert_hertz(110), gpass, gstop)
+# a no ser que se esté a más de 12 metros, este filtro no serviría, 
+# estando a 12m, la frecuencia de batido es 1000Hz
+ord, wn = signal.buttord(convert_hertz(1000), convert_hertz(1200), gpass, gstop)
 b, a = signal.butter(ord, wn, btype='lowpass')
 
 canal1Filtrado = signal.lfilter(b, a, canal1)
@@ -89,10 +91,14 @@ print('     > Orden del filtro pasabajos: ' + str(ord))
 
 print('> Primer filtro aplicado, 80Hz')
 
-#hacerfft(canal1Filtrado)
-#grafica(timeArray, canal1Filtrado, "| Pasabajos 80Hz")
+hacerfft(canal1Filtrado)
+grafica(timeArray, canal1Filtrado, "| Pasabajos 80Hz")
 
 # Pasabanda @ 25Hz
+# acá se pasará a modelar la frecuencia de batido de manera variable
+# se están haciendo pruebas
+# se ha adquirido data a 0.3, 1.5 y 3 metros
+# los valores de frecuencia son 25, 125 y 250Hz respectivamente
 centro = 25
 ancho = 2
 downpass = (centro - (ancho/2))
