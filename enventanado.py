@@ -2,6 +2,8 @@ from scipy.io import wavfile
 import matplotlib.pyplot as plt
 from pylab import plot, subplot, xlabel, ylabel
 from pylab import fft, ceil, log10, arange, mean
+import random
+import numpy as np
 
 # Este script crea un arreglo donde los valores son los valores medios del
 # archivo de sonido, en donde la muestra depende del parámetro 'dist'
@@ -88,15 +90,31 @@ channel1[channel1 < 0] = 0
 
 print('> Diodo aplicado')
 '''
+
+channel1 = []
+
+for i in range(100):
+    randomcito = random.randint(0, 10)
+    randomcito = randomcito/1.0
+    channel1.append(randomcito)    
+
+print(channel1)
+print(type(channel1))
+
+leng = len(channel1)
+
 n = 0
-window = 800
-over = 35
+window = 6
+over = 3
 windowedvalues = []
 bottom = 0
 top = window
+print("Tipo de windowedValues es: " + str(type(windowedvalues)))
 
-while (bottom + over) <= leng:
+while (bottom + window) <= leng:
     tempVal = mean(channel1[bottom:top])
+    print(channel1[bottom:top])
+    print(tempVal)
     windowedvalues.append(tempVal)
     n += 1
     bottom = n*over
@@ -111,18 +129,48 @@ tch1av = arange(0, len(ch1av), 1)
 tch1av = tch1av/(fs/dist)
 '''
 
-twindwedValues = arange(0, len(windowedvalues), 1)
+twindowedValues = arange(0, len(windowedvalues), 1)
+tn = arange(0, len(channel1), 1)
 
 
 print('> Creación de arreglo de tiempo para valores promedio')
 
 # Gráfica de señal original y la promediada
 subplot(2,1,1)
-plot(twindwedValues, windowedvalues, label='signal', color='k')
+plot(twindowedValues, windowedvalues, label='signal', color='k')
 
 subplot(2,1,2)
-plot(t, channel1)
+plot(tn, channel1)
 
 plt.show()
+
+orderedwindowed = ceil(windowedvalues)
+orderedwindowed.sort()
+
+orderedchannel1 = channel1
+orderedchannel1.sort()
+
+subplot(2,1,1)
+plot(twindowedValues, orderedwindowed, label='signal', color='k')
+
+subplot(2,1,2)
+plot(tn, orderedchannel1)
+
+plt.show()
+
+binsHist = arange(1,10+1,1)
+
+
+
+channel1Hist, channel1Bin_edges = np.histogram(channel1, range=(0.0,10.0))
+
+subplot(2,1,1)
+plt.hist(windowedvalues, range=(0.0,10.0))
+
+subplot(2,1,2)
+plt.hist(binsHist, channel1Hist)
+
+plt.show()
+
 
 print('> Gráfica de valores medios y señal original realizada')
