@@ -15,7 +15,7 @@ from pylab import plot, xlabel, ylabel, subplot
 # Al final del programa, se muestran las señales filtrada y sin filtrado.
 
 carpeta = "../audioFiles/"
-nombre = 'Sentado_30cm_interfaz_1'
+nombre = 'Sentado_Tranquilo_UNmetroYMedio_3'
 ext = '.wav'
 arch = carpeta + nombre + ext
 
@@ -26,6 +26,8 @@ print('> Archivo leído')
 data = data/(2.**15)
 leng = len(data)
 canal1 = data[:,0]
+
+print('> Duración de la muestra: ' + str(leng/fs) + "s")
 
 print('> Canales spliteados')
 
@@ -89,39 +91,42 @@ canal1Filtrado = signal.lfilter(b, a, canal1)
 
 print('     > Orden del filtro pasabajos: ' + str(ord))
 
-print('> Primer filtro aplicado, 80Hz')
+print('> Primer filtro aplicado, 1000Hz')
 
 hacerfft(canal1Filtrado)
-grafica(timeArray, canal1Filtrado, "| Pasabajos 80Hz")
+grafica(timeArray, canal1Filtrado, "| Pasabajos 1000Hz")
 
 # Pasabanda @ 25Hz
 # acá se pasará a modelar la frecuencia de batido de manera variable
 # se están haciendo pruebas
 # se ha adquirido data a 0.3, 1.5 y 3 metros
 # los valores de frecuencia son 25, 125 y 250Hz respectivamente
-centro = 25
-ancho = 2
+
+# IMPORTANTE: buscar alrededor de este valor, la frecuencia adecuada
+
+centro = 150
+ancho = 4
 downpass = (centro - (ancho/2))
 uppass = (centro + (ancho/2))
 downstop = downpass - ancho
 upstop = uppass + ancho
-ord, wn = signal.buttord([convert_hertz(downpass), convert_hertz(uppass)], [convert_hertz(downstop), convert_hertz(upstop)], 1, 10)
+ord, wn = signal.buttord([convert_hertz(downpass), convert_hertz(uppass)], [convert_hertz(downstop), convert_hertz(upstop)], 1, 20)
 b, a = signal.butter(ord, wn, btype='bandpass')
 canal1Filtrado = signal.lfilter(b, a, canal1Filtrado)
 
 print('     > Orden del filtro pasabanda: ' + str(ord))
 
-print('> Segundo filtro aplicado, @25Hz')
+print('> Segundo filtro aplicado, @' + str(centro) + 'Hz')
 
 hacerfft(canal1Filtrado)
-grafica(timeArray, canal1Filtrado, "| Pasabanda @ 25Hz")
+grafica(timeArray, canal1Filtrado, "| Pasabanda @" + str(centro) + "Hz")
 
 # Diodo
 #canal1Filtrado[canal1Filtrado < 0] = 0
 
 #grafica(timeArray, canal1Filtrado, "| Diodo (filtrado)")
 
-print("> Diodo aplicado a señal filtrada")
+#print("> Diodo aplicado a señal filtrada")
 
 distancia = 2700
 
