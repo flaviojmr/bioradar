@@ -15,7 +15,7 @@ fs, data = wavfile.read(arch)
 print('> Archivo leído')
 
 data = data/(2.**15)
-print ("El tamaño de la primera dimensión es: ", str(data.shape[0]))
+print ("> El tamaño de la primera dimensión es:", str(data.shape[0]))
 leng = len(data)
 
 channel1 = data[:,0]

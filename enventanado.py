@@ -41,9 +41,6 @@ def hacerfft(channel):
     return fdata
 
 
-
-
-
 carpeta = "../audioFiles/"
 nombre = 'Sentado_30cm_interfaz_1'
 ext = '.wav'
@@ -51,7 +48,7 @@ arch = carpeta + nombre + ext
 
 fs, data = wavfile.read(arch)
 
-print('> Archivo leído: fs, data')
+print('> Archivo leído: \n\tfs:\t' + str(fs) + '\n\tdata:\t' + str(len(data)))
 
 data = data/(2.**15)
 leng = len(data)
