@@ -135,7 +135,7 @@ arraysMaxValue = ((argmax(fdata1)*fs)/(2*len(freqArray1)))
 print("El punto máximo es: " + str(arraysMaxValue))
 
 
-freq = arraysMaxValue
+freq = arraysMaxValue + 0.0000138
 time1 = np.arange(leng) / fs
 generatedSignal = 2*np.sin(2*np.pi*freq*time1)
 
@@ -149,7 +149,7 @@ grafica(timeArray, canal1Filtrado, "Señal mezclada y puesta en banda base")
 
 # Tercer filtro, pasabajos
 
-ord, wn = signal.buttord(convert_hertz(80), convert_hertz(120), 4, 14)
+ord, wn = signal.buttord(convert_hertz(80), convert_hertz(120), 4, 16)
 b, a = signal.butter(ord, wn, btype='lowpass')
 
 canal1Filtrado = signal.lfilter(b, a, canal1Filtrado)
@@ -168,7 +168,7 @@ grafica(timeArray, canal1Filtrado, "Pasabajos para banda base")
 
 #print("> Diodo aplicado a señal filtrada")
 
-distancia = 20
+distancia = 2700
 
 # Hallado de picos
 peaksFiltrado, valuesFiltrado = find_peaks(canal1Filtrado, height=0, distance = distancia)
@@ -194,12 +194,12 @@ plot(timeArray, canal1)
 plot(peaksNoFiltro/fs, canalNoFiltro[peaksNoFiltro])
 #plt.show()
 
-newArray = savgol_filter(canal1Filtrado, 101, 5)
+newArray = savgol_filter(canal1Filtrado, 501, 5)
 
 # Gráfica resumen
 subplot(2,1,1)
 plot(timeArray, canal1Filtrado)
-#plot(peaksFiltrado/fs, canal1Filtrado[peaksFiltrado])
+plot(peaksFiltrado/fs, canal1Filtrado[peaksFiltrado])
 plot(timeArray, newArray, color='k')
 ylabel('Amplitude')
 xlabel('Time (s)  ' + "|  Processed Signal")
