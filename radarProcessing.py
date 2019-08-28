@@ -92,7 +92,7 @@ def hacerfft(channel, texto=None):
     return fdata, freqArray
 
 #hacerfft(canal1, "original")
-grafica(timeArray, canal1)#, "original")
+grafica(timeArray, canal1, "original")
 
 # Primer filtro pasabajos, diseño y aplicación
 gpass = 3
