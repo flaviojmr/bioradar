@@ -37,18 +37,29 @@ print('> Arreglo de tiempo y canal creados')
 
 timeArray = timeArray/fs
 
-def grafica(timeArray, channel, texto):
+# Grafica la señal en tiempo, donde las entradas tiene que cumplir
+# lo siguiente: el eje X y el Y [x, y=f(x)]. La señal que se quiere
+# graficar debe ser el segundo parámetro
+# Además se puede introducir un mensaje opcional para xlabel
+def grafica(timeArray, channel, texto=None):
     plot(timeArray, channel)
     ylabel('Amplitude')
     if texto == None:
         xlabel('Time (s)')
     else:
-        xlabel('Time (s) ' + " | " + str(texto))
+        xlabel('Time (s) | ' + str(texto))
     plt.show()
 
-def convert_hertz(freq):
-    return freq * 2.0 / 44100.0
+# Convierte las frecuencias deseadas a frecuencias normalizadas, 
+# cumpliendo el criterio de Nyquist. Normaliza de 0 a 1, donde 1
+# es la frecuencia de Nyquist
+def convert_hertz(freq, fs=fs):
+    return freq * 2.0 / fs
 
+# Grafica la transformada de Fourier de la señal, utiliza FFT.
+# Devuelve los valores de fdata y freqArray, por si quieren 
+# ser utilizados fuera de la función
+# Además se puede introducir un mensaje opcional para xlabel
 def hacerfft(channel, texto=None):
     fdata = fft(channel)
 
@@ -81,7 +92,7 @@ def hacerfft(channel, texto=None):
     return fdata, freqArray
 
 #hacerfft(canal1, "original")
-#grafica(timeArray, canal1, "original")
+grafica(timeArray, canal1)#, "original")
 
 # Primer filtro pasabajos, diseño y aplicación
 gpass = 3
@@ -213,15 +224,8 @@ xlabel('Time (s)  ' + "|  No Processed Signal")
 plt.show()
 
 unaVariableMas = canal1Filtrado[peaksFiltrado]
-print(unaVariableMas)
-print("El tamaño de unaVariableMas, usando len, es: " + str(len(unaVariableMas)))
-print("El tamaño de unaVariableMas, usando shape, es: " + str(unaVariableMas.shape))
-print("El tamaño de unaVariableMas, usando size, es: " + str(unaVariableMas.size))
 
 newArray = savgol_filter(unaVariableMas, 51, 5)
-print("El tamaño de newArray, usando len, es: " + str(len(newArray)))
-print("El tamaño de newArray, usando shape, es: " + str(newArray.shape))
-print("El tamaño de newArray, usando size, es: " + str(newArray.size))
 plot(peaksFiltrado/fs, newArray, color='k') #,linewidth=3.5)
 plot(peaksFiltrado/fs, unaVariableMas)
 
