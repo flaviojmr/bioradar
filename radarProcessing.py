@@ -47,7 +47,7 @@ def grafica(timeArray, channel, texto=None):
     if texto == None:
         xlabel('Time (s)')
     else:
-        xlabel('Time (s) | ' + str(texto))
+        xlabel('Time (s)  |  ' + str(texto))
     plt.show()
 
 # Convierte las frecuencias deseadas a frecuencias normalizadas, 
@@ -83,7 +83,7 @@ def hacerfft(channel, texto=None):
     if texto == None: 
         xlabel('Frequency (kHz)')
     else:
-        xlabel('Frequency (kHz)' + " | " + str(texto))
+        xlabel('Frequency (kHz)  |  ' + str(texto))
     ylabel('Power (dB)')
     plt.show()
 
@@ -149,9 +149,9 @@ print("> Etapa de mezclado")
 
 arraysMaxValue = ((argmax(fdata1)*fs)/(2*len(freqArray1)))      # Valor de mayor potencia, en frecuencia (Hz)
 
-print("\t> El punto máximo después del segundo filtrado es: " + str(arraysMaxValue))
+print("\t> La frecuencia máxima después del segundo filtrado es: " + str(arraysMaxValue))
 
-freq = arraysMaxValue
+freq = arraysMaxValue - centro/2
 time1 = np.arange(leng) / fs
 generatedSignal = 2*np.sin(2*np.pi*freq*time1)
 
@@ -163,8 +163,7 @@ print('\t> La señal ha sido mezclada')
 #hacerfft(canal1Filtrado, "Señal mezclada y puesta en banda base")
 #grafica(timeArray, canal1Filtrado, "Señal mezclada y puesta en banda base")
 
-# Tercer filtro, pasabajos
-
+# Tercer filtro, pasabajos  # C A M B I O S
 print("> Etapa de TERCER filtro")
 
 ord, wn = signal.buttord([convert_hertz(298), convert_hertz(302)], [convert_hertz(295), convert_hertz(305)], 4, 16)
@@ -233,15 +232,15 @@ xlabel("Time (s)  | Señal No-Procesada")
 
 plt.show()
 
-unaVariableMas = canal1Filtrado[peaksFiltrado]
+picosFiltradoEnOriginal = canal1Filtrado[peaksFiltrado]
 
-newArray = savgol_filter(unaVariableMas, 51, 5)
-plot(peaksFiltrado/fs, newArray, color='k') #,linewidth=3.5)
-plot(peaksFiltrado/fs, unaVariableMas)
+picosFiltradoEnOriginal_suavizado = savgol_filter(picosFiltradoEnOriginal, 51, 5)
+plot(peaksFiltrado/fs, picosFiltradoEnOriginal_suavizado, color='k') #,linewidth=3.5)
+plot(peaksFiltrado/fs, picosFiltradoEnOriginal)
 
 plt.show()
 
-print(corrcoef(unaVariableMas, newArray))
+print(corrcoef(picosFiltradoEnOriginal, picosFiltradoEnOriginal_suavizado))
 
 print('linea de espera')
 print('siguiente linea de espera')
