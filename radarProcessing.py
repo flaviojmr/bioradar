@@ -91,7 +91,7 @@ def hacerfft(channel, texto=None):
 
     return fdata, freqArray
 
-#hacerfft(canal1, "original")
+hacerfft(canal1, "original")
 grafica(timeArray, canal1, "original")
 
 # Primer filtro pasabajos, diseño y aplicación
@@ -113,8 +113,8 @@ print('\t> Orden del filtro pasabajos (1): ' + str(ord))
 
 print('\t> Primer filtro aplicado, 1000Hz')
 
-#hacerfft(canal1Filtrado, "Pasabajos 1000Hz")
-#grafica(timeArray, canal1Filtrado, "Pasabajos 1000Hz")
+hacerfft(canal1Filtrado, "Pasabajos 1000Hz")
+grafica(timeArray, canal1Filtrado, "Pasabajos 1000Hz")
 
 # Pasabanda @ 25Hz
 # acá se pasará a modelar la frecuencia de batido de manera variable
@@ -140,7 +140,7 @@ canal1Filtrado = signal.lfilter(b, a, canal1Filtrado)
 print('\t> Segundo filtro aplicado, @' + str(centro) + 'Hz')
 
 fdata1, freqArray1 = hacerfft(canal1Filtrado, "Pasabanda @" + str(centro) + "Hz")
-#grafica(timeArray, canal1Filtrado, "Pasabanda @" + str(centro) + "Hz")
+grafica(timeArray, canal1Filtrado, "Pasabanda @" + str(centro) + "Hz")
 
 # Etapa de mezclado
 # Generación de señal senoidal
@@ -151,30 +151,29 @@ arraysMaxValue = ((argmax(fdata1)*fs)/(2*len(freqArray1)))      # Valor de mayor
 
 print("\t> La frecuencia máxima después del segundo filtrado es: " + str(arraysMaxValue))
 
-freq = arraysMaxValue - centro/2
-time1 = np.arange(leng) / fs
-generatedSignal = 2*np.sin(2*np.pi*freq*time1)
+freq = arraysMaxValue
+generatedSignal = 2*np.sin(2*np.pi*freq*timeArray)
 
-print('\t> Señal arbitraria de ' + str(freq) + ' creada')
+print('\t> Señal arbitraria de "' + str(freq) + '" creada')
 canal1Filtrado = multiply(canal1Filtrado, generatedSignal)
 
 print('\t> La señal ha sido mezclada')
 
-#hacerfft(canal1Filtrado, "Señal mezclada y puesta en banda base")
-#grafica(timeArray, canal1Filtrado, "Señal mezclada y puesta en banda base")
+hacerfft(canal1Filtrado, "Señal mezclada y puesta en banda base")
+grafica(timeArray, canal1Filtrado, "Señal mezclada y puesta en banda base")
 
 # Tercer filtro, pasabajos  # C A M B I O S
 print("> Etapa de TERCER filtro")
 
-ord, wn = signal.buttord([convert_hertz(298), convert_hertz(302)], [convert_hertz(295), convert_hertz(305)], 4, 16)
+ord, wn = signal.buttord(convert_hertz(10), convert_hertz(15), 4, 15)
 print('\t> Orden del filtro pasabajos (3): ' + str(ord))
-b, a = signal.butter(ord, wn, btype='bandpass')
+b, a = signal.butter(ord, wn, btype='lowpass')
 canal1Filtrado = signal.lfilter(b, a, canal1Filtrado)
 
 print('\t> Tercer filtro aplicado, banda base')
 
-#hacerfft(canal1Filtrado, "Pasabajos para banda base")
-#grafica(timeArray, canal1Filtrado, "Pasabajos para banda base")
+hacerfft(canal1Filtrado, "Pasabajos para banda base")
+grafica(timeArray, canal1Filtrado, "Pasabajos para banda base")
 
 # Diodo
 '''
@@ -212,15 +211,15 @@ print("\t> Picos de señal no-procesada hallados")
 plot(timeArray, canal1)
 plot(peaksNoFiltro/fs, canalNoFiltro[peaksNoFiltro])
 plt.show()
-
-newArray = savgol_filter(canal1Filtrado, 101, 2)
 '''
+newArray = savgol_filter(canal1Filtrado, 51, 2)
+
 # Gráfica resumen
 print("> Gráfica resumen")
 subplot(2,1,1)
 plot(timeArray, canal1Filtrado)
 plot(peaksFiltrado/fs, canal1Filtrado[peaksFiltrado])
-#plot(timeArray, newArray, color='k')
+plot(timeArray, newArray, color='k')
 ylabel('Amplitude')
 xlabel("Time (s)  |  Señal Procesada")
 
@@ -234,7 +233,7 @@ plt.show()
 
 picosFiltradoEnOriginal = canal1Filtrado[peaksFiltrado]
 
-picosFiltradoEnOriginal_suavizado = savgol_filter(picosFiltradoEnOriginal, 51, 5)
+picosFiltradoEnOriginal_suavizado = savgol_filter(picosFiltradoEnOriginal, 21, 8)
 plot(peaksFiltrado/fs, picosFiltradoEnOriginal_suavizado, color='k') #,linewidth=3.5)
 plot(peaksFiltrado/fs, picosFiltradoEnOriginal)
 
