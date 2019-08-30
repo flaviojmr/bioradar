@@ -141,7 +141,7 @@ print('\t> Segundo filtro aplicado, @' + str(centro) + 'Hz')
 
 fdata1, freqArray1 = hacerfft(canal1Filtrado, "Pasabanda @" + str(centro) + "Hz")
 grafica(timeArray, canal1Filtrado, "Pasabanda @" + str(centro) + "Hz")
-
+'''
 # Etapa de mezclado
 # Generación de señal senoidal
 
@@ -161,20 +161,21 @@ print('\t> La señal ha sido mezclada')
 
 hacerfft(canal1Filtrado, "Señal mezclada y puesta en banda base")
 grafica(timeArray, canal1Filtrado, "Señal mezclada y puesta en banda base")
-
+'''
+'''
 # Tercer filtro, pasabajos  # C A M B I O S
 print("> Etapa de TERCER filtro")
 
-ord, wn = signal.buttord(convert_hertz(10), convert_hertz(15), 4, 15)
+ord, wn = signal.buttord([convert_hertz(1.5), convert_hertz(14.5)], [convert_hertz(0.1), convert_hertz(15.9)], 0.5, 3)
 print('\t> Orden del filtro pasabajos (3): ' + str(ord))
-b, a = signal.butter(ord, wn, btype='lowpass')
+b, a = signal.butter(ord, wn, btype='bandpass')
 canal1Filtrado = signal.lfilter(b, a, canal1Filtrado)
 
 print('\t> Tercer filtro aplicado, banda base')
 
 hacerfft(canal1Filtrado, "Pasabajos para banda base")
 grafica(timeArray, canal1Filtrado, "Pasabajos para banda base")
-
+'''
 # Diodo
 '''
 canal1Filtrado[canal1Filtrado < 0] = 0
@@ -212,14 +213,26 @@ plot(timeArray, canal1)
 plot(peaksNoFiltro/fs, canalNoFiltro[peaksNoFiltro])
 plt.show()
 '''
-newArray = savgol_filter(canal1Filtrado, 51, 2)
+
+picosFiltradoEnOriginal = canal1Filtrado[peaksFiltrado]
+
+tenthFloored = ceil(len(picosFiltradoEnOriginal)*0.1)
+
+# La ventana es 10% de la longitud del arreglo, debe ser impar
+
+if (tenthFloored % 2 == 1):
+    windowSavGolFilter = tenthFloored
+else:
+    windowSavGolFilter = tenthFloored + 1
+
+picosProcesado_suavizado = savgol_filter(canal1Filtrado[peaksFiltrado], int(windowSavGolFilter), 5)
 
 # Gráfica resumen
 print("> Gráfica resumen")
 subplot(2,1,1)
 plot(timeArray, canal1Filtrado)
 plot(peaksFiltrado/fs, canal1Filtrado[peaksFiltrado])
-plot(timeArray, newArray, color='k')
+plot(peaksFiltrado/fs, picosProcesado_suavizado, color='k')
 ylabel('Amplitude')
 xlabel("Time (s)  |  Señal Procesada")
 
@@ -227,22 +240,16 @@ subplot(2,1,2)
 plot(timeArray, canal1)
 plot(peaksNoFiltro/fs, canalNoFiltro[peaksNoFiltro])
 ylabel('Amplitude')
-xlabel("Time (s)  | Señal No-Procesada")
+xlabel("Time (s)  |  Señal No-Procesada")
 
 plt.show()
 
-picosFiltradoEnOriginal = canal1Filtrado[peaksFiltrado]
-
-picosFiltradoEnOriginal_suavizado = savgol_filter(picosFiltradoEnOriginal, 21, 8)
-plot(peaksFiltrado/fs, picosFiltradoEnOriginal_suavizado, color='k') #,linewidth=3.5)
+plot(peaksFiltrado/fs, picosProcesado_suavizado, color='k') #,linewidth=3.5)
 plot(peaksFiltrado/fs, picosFiltradoEnOriginal)
 
 plt.show()
 
-print(corrcoef(picosFiltradoEnOriginal, picosFiltradoEnOriginal_suavizado))
-
-print('linea de espera')
-print('siguiente linea de espera')
+print(corrcoef(picosFiltradoEnOriginal, picosProcesado_suavizado))
 
 '''
 print("Correlación de ubicación de puntos máximos" + str(np.corrcoef(peaksFiltrado, peaksNoFiltro)))
