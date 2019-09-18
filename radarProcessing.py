@@ -251,6 +251,8 @@ plt.show()
 
 print(corrcoef(picosFiltradoEnOriginal, picosProcesado_suavizado))
 
+print(corrcoef(canalNoFiltro[peaksNoFiltro], picosProcesado_suavizado))
+
 '''
 print("Correlación de ubicación de puntos máximos" + str(np.corrcoef(peaksFiltrado, peaksNoFiltro)))
 
